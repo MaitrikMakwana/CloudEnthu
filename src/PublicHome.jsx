@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import API_BASE from './config';
 
 export default function PublicHome() {
     const [posts, setPosts] = useState([]);
@@ -15,7 +16,7 @@ export default function PublicHome() {
             setLoading(true);
             try {
                 // Fetch Weeks
-                fetch(`${import.meta.env.VITE_API_URL}/api/public/weeks`)
+                fetch(`${API_BASE}/api/public/weeks`)
                     .then(res => res.json())
                     .then(data => {
                         const map = {};
@@ -25,7 +26,7 @@ export default function PublicHome() {
                         setWeekNames(map);
                     }).catch(err => console.error("Error fetching weeks", err));
 
-                let url = `${import.meta.env.VITE_API_URL}/api/public/posts?limit=50`;
+                let url = `${API_BASE}/api/public/posts?limit=50`;
                 if (searchQuery) url += `&q=${encodeURIComponent(searchQuery)}`;
                 if (activeTag !== 'All') url += `&tag=${encodeURIComponent(activeTag)}`;
 

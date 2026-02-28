@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import API_BASE from './config';
 
 export default function PublicProfile() {
     const { username } = useParams();
@@ -11,7 +12,7 @@ export default function PublicProfile() {
         const fetchProfile = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/@${username}`);
+                const res = await fetch(`${API_BASE}/api/public/@${username}`);
                 if (!res.ok) throw new Error('Author not found');
                 const data = await res.json();
                 setAuthor(data);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_BASE from './config';
 
 export default function Dashboard({ onLogout }) {
     const [notes, setNotes] = useState([]);
@@ -22,7 +23,7 @@ export default function Dashboard({ onLogout }) {
 
     const fetchWeeks = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/weeks`);
+            const res = await fetch(`${API_BASE}/api/public/weeks`);
             if (res.ok) {
                 const data = await res.json();
                 const map = {};
@@ -37,7 +38,7 @@ export default function Dashboard({ onLogout }) {
     const fetchNotes = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`, {
+            const res = await fetch(`${API_BASE}/api/notes`, {
                 headers: { 'Authorization': `Bearer ${getToken()}` }
             });
             if (res.ok) {
@@ -64,7 +65,7 @@ export default function Dashboard({ onLogout }) {
     const handleCreateNew = async () => {
         const weekForNew = selectedWeek || 1;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`, {
+            const res = await fetch(`${API_BASE}/api/notes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,7 +101,7 @@ export default function Dashboard({ onLogout }) {
         const tagsArray = editorTags.split(',').map(t => t.trim()).filter(Boolean);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes/${activeNoteId}`, {
+            const res = await fetch(`${API_BASE}/api/notes/${activeNoteId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ export default function Dashboard({ onLogout }) {
 
         const idToDelete = activeNoteId;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes/${idToDelete}`, {
+            const res = await fetch(`${API_BASE}/api/notes/${idToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${getToken()}`
@@ -167,7 +168,7 @@ export default function Dashboard({ onLogout }) {
         if (!newName || newName === currentName) return;
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/weeks/${weekNum}`, {
+            const res = await fetch(`${API_BASE}/api/weeks/${weekNum}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

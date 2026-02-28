@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from 'react';
+import API_BASE from './config';
 
 export default function PublicPost() {
     const { slug } = useParams();
@@ -12,7 +13,7 @@ export default function PublicPost() {
         const fetchPost = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/posts/${slug}`);
+                const res = await fetch(`${API_BASE}/api/public/posts/${slug}`);
                 if (!res.ok) throw new Error('Post not found');
                 const data = await res.json();
                 setPost(data);
