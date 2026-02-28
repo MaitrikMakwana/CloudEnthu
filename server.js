@@ -80,6 +80,16 @@ app.post('/api/auth/login', loginLimiter, async (req, res) => {
 
 // --- PUBLIC ROUTES (No Auth) ---
 
+// Health check — visit /api/health on Vercel to diagnose DB/env issues
+app.get('/api/health', async (req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.json({ status: 'ok', db: 'connected', jwt: !!process.env.JWT_SECRET });
+    } catch (err) {
+        res.status(500).json({ status: 'error', db: 'disconnected', message: err.message });
+    }
+});
+
 app.get('/api/public/weeks', async (req, res) => {
     try {
         const weeks = await prisma.week.findMany({ orderBy: { number: 'asc' } });

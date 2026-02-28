@@ -53,16 +53,17 @@ function LoginApp() {
         body: JSON.stringify({ email, password })
       });
 
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to login');
+        throw new Error(data.error || `Server error (${response.status}). Check Vercel environment variables.`);
       }
 
-      const { token } = await response.json();
-      localStorage.setItem('admin_token', token);
+      localStorage.setItem('admin_token', data.token);
       window.location.href = "/dashboard";
     } catch (err) {
-      setError(err.message || "Invalid credentials. This incident will be reported.");
+      setError(err.message || "Login failed. The backend may be misconfigured.");
     }
   };
 
