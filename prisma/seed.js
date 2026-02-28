@@ -5,7 +5,7 @@ import "dotenv/config";
 const prisma = new PrismaClient();
 
 async function main() {
-    const passwordHash = await bcrypt.hash('admin', 10);
+    const passwordHash = await bcrypt.hash('C1oud!Enthu@2026', 10);
 
     const user = await prisma.user.upsert({
         where: { email: 'admin@cloudenthu.com' },
