@@ -12,8 +12,13 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_dev_key_only_for_local';
 
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+    crossOriginResourcePolicy: false, // Allow cross-origin by Vercel frontend
+}));
+app.use(cors({
+    origin: process.env.ALLOWED_ORIGIN || '*',
+    credentials: true,
+}));
 app.use(express.json({ limit: '1mb' })); // Limit body size
 
 // --- SECURITY MIDDLEWARE ---
@@ -259,7 +264,11 @@ app.delete('/api/notes/:id', requireAuth, async (req, res) => {
 });
 
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`CloudEnthu backend running with live DB on port ${PORT}`);
-});
+// Start Server (only in local dev — Vercel uses the exported app)
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`CloudEnthu backend running with live DB on port ${PORT}`);
+    });
+}
+
+export default app;

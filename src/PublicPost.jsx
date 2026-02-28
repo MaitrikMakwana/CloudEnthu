@@ -12,7 +12,7 @@ export default function PublicPost() {
         const fetchPost = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:3001/api/public/posts/${slug}`);
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/posts/${slug}`);
                 if (!res.ok) throw new Error('Post not found');
                 const data = await res.json();
                 setPost(data);
