@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  username     String   @unique @db.VarChar(50)  // New: For public profile URLs (e.g., cloudenthu.com/@alice)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String?
+  displayName  String   @db.VarChar(50)
+  bio          String?  @db.Text                 // New: Author bio for the blog profile
+  createdAt    DateTime @default(now()) @db.Timestamptz()
+  
+  // Relations
+  notes        Note[]   @relation("UserNotes")
+
+  @@map("users")
+}
+
+model Note {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  title       String   @default("Untitled") @db.VarChar(100)
+  slug        String   @unique @db.VarChar(150)  // New: Clean URL for sharing (e.g., "aws-s3-storage-classes")
+  excerpt     String?  @db.Text                  // New: Short summary shown on the blog feed
+  content     String?  @default("") @db.Text
+  weekNumber  Int?
+  status      String   @default("DRAFT") @db.VarChar(20) // DRAFT, PUBLISHED, UNLISTED
+  tags        String[] @default([]) 
+  publishedAt DateTime? @db.Timestamptz()        // New: Tracks exactly when the post went public
+  updatedAt   DateTime @updatedAt @db.Timestamptz()
+  createdAt   DateTime @default(now()) @db.Timestamptz()
+  
+  // Relations
+  user        User     @relation("UserNotes", fields: [userId], references: [id], onDelete: Cascade)
+
+  // --- Indexes for Blog Performance ---
+  @@index([userId])
+  @@index([status, publishedAt]) // Fast querying for public feeds: "WHERE status = 'PUBLISHED' ORDER BY publishedAt"
+  
+  @@map("notes")
+}
+
+model Week {
+  number Int    @id
+  name   String @default("Untitled Week") @db.VarChar(100)
+
+  @@map("weeks")
+}
