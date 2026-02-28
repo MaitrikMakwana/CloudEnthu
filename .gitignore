@@ -25,5 +25,7 @@ dist-ssr
 
 /src/generated/prisma
 
-# Env
+# Env — never commit real secrets
 .env
+.env.local
+.env.*.local
